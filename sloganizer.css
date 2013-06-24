@@ -1,0 +1,17 @@
+/* CLEARFIX */
+.clearfix{
+	zoom: 1;
+} 
+.clearfix:before, .clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	overflow: hidden;
+}
+		
+.clearfix:after {
+	clear: both;
+	
+}
+body{margin:0 auto;}
+.mySloganizerWrapper{width:80%;margin:20% auto;position:relative;background:#ddd;}
