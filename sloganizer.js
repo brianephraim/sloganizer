@@ -30,52 +30,46 @@
 		
 	};
 	sloganizer.prototype.summonWheels = function(wheelLength){
-		//this.wordBankObjs
-		//this.settings.$el.append($wheel);
-		//console.log(wheelLength)
+		var self = this;
 		var clones = [];
+		var animationArray = [];
+		var callbackCount = 0;
 		for(var i = 0; i<wheelLength; i++){
 			this.randomizeCurrentWordObjs()
 			for(var j = 0; j<this.wordBankObjs.length; j++){
-				//console.log(this.wordBankObjs[j])
-				//console.log(this.wordBankObjs[j].currentWordObj.word)
-				if(i === wheelLength - 1){
+				this.wordBankObjs[j].wheelLengthXXX = (wheelLength-(Math.round(wheelLength/6)*(this.wordBankObjs.length - j)));
+				console.log(this.wordBankObjs[j].wheelLengthXXX)
+				if(i === this.wordBankObjs[j].wheelLengthXXX - 1){
 					this.wordBankObjs[j].$el.append(this.wordBankObjs[j].currentWordObj.$el)
 				} else {
-					var $clone = this.wordBankObjs[j].currentWordObj.$el.clone()
-					this.wordBankObjs[j].$el.append($clone)
-					clones.push($clone);
+					if(i < this.wordBankObjs[j].wheelLengthXXX - 1){
+						var $clone = this.wordBankObjs[j].currentWordObj.$el.clone()
+						this.wordBankObjs[j].$el.append($clone)
+						clones.push($clone);
+					}
 				}
-				//this.wordBankObjs[j].$el.append(this.wordBankObjs[j].currentWordObj.$el.clone())
-			}
-			
-			//console.log(this.currentSentence)
-			
+			}			
 		}
 
 		for(var j = 0; j<this.wordBankObjs.length; j++){
-		}
-
-		var self = this;
-		var callbackCount = 0;
-		for(var j = 0; j<self.wordBankObjs.length; j++){
 			self.settings.$el.append(self.wordBankObjs[j].$el)
 			Tools.dom.cssTransitioner2({
 				target: self.wordBankObjs[j].$el,
 				cssProperty: Tools.dom.translate3dKey,
 				cssValue: {
 					type:'translate3d',
-					values:[0,-(wheelLength - 1)*this.wordHeight,0]
+					values:[0,-(this.wordBankObjs[j].wheelLengthXXX - 1)*this.wordHeight,0]
 				},
 				duration: 500,
 				ease: 'ease-out',
+				duration:this.wordBankObjs[j].wheelLengthXXX * 110,
 				callback: function($that){
 					console.log('original callback')
 					if(callbackCount === self.wordBankObjs.length - 1){
 						console.log('done!!!',clones.length)
 
 					} else {
-						console.log('not')
+						console.log('not',callbackCount)
 					}
 					callbackCount ++;
 				}

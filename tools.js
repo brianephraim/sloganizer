@@ -144,9 +144,7 @@
 	dom.prototype.cssTransitioner2 = function(cssTransObj){
 		var self = this;
 		if(typeof cssTransObj.cssValue === 'object'){
-			console.log(cssTransObj.cssValue.type)
 			if(cssTransObj.cssValue.type ==='translate3d'){
-				console.log(cssTransObj.cssValue.values[1])
 				var cssData = {
 					'background':'red',
 					'position':'relative',
@@ -155,9 +153,7 @@
 				}
 				cssData[cssTransObj.cssProperty] = cssTransObj.cssValue.type + '('+-cssTransObj.cssValue.values[0]+'px,'+-cssTransObj.cssValue.values[1]+'px,'+-cssTransObj.cssValue.values[2]+'px)';
 				cssTransObj.target.css(cssData)
-				console.log(cssTransObj)
 				setTimeout(function(){
-					console.log('ww')
 					cssTransObj.cssValue = 'translate3d(0px, 0px, 0px)';
 					var cssTransObjClone = $.extend({},cssTransObj,{})
 					cssTransObj.callback = function(){
@@ -179,7 +175,6 @@
 	}
 
 	dom.prototype.cssTransitioner = function(cssTransObj){
-		console.log('ddd')
 		if(typeof cssTransObj.duration === 'undefined'){
 			cssTransObj.duration = 1200;
 		}
@@ -203,7 +198,6 @@
 		})
 		setTimeout(function(){
 			//requestAnimFrame(function(){
-				console.log(cssTransObj.cssProperty,cssTransObj.cssValue)
 			cssTransObj.target.css(cssTransObj.cssProperty,cssTransObj.cssValue)
 			//});
 		},0)

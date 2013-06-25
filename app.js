@@ -18,7 +18,7 @@ $(function() {
 	})
 	console.log(mySloganizer)
 
-	mySloganizer.summonWheels(5);
+	mySloganizer.summonWheels(25);
 	$sloganizerWrapper.find('.randomizeButton').on('click',function(){
 		mySloganizer.summonWheels(5);
 	})
