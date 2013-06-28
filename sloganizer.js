@@ -22,35 +22,49 @@
 		this.settings = $.extend({}, defaults, options);
 		this.wordHeight = 0;
 		this.currentSentence = '';
+		this.currentSentenceObj = {
+			sentence: '',
+			$el: $(),
+			wordBankObjs: []
+		};
 		this.wordBankObjs = [];
-
+		this.clones=$();
 
 		this.initialize()
-		this.randomizeCurrentWordObjs();
+		//this.randomizeCurrentWordObjs();
+		
 		
 	};
-	sloganizer.prototype.summonWheels = function(wheelLength){
+	sloganizer.prototype.formulateWheelsAndSentence = function(wheelLength){
 		var self = this;
-		var clones = [];
-		var animationArray = [];
-		var callbackCount = 0;
+		var sentenceArray = [];
 		for(var i = 0; i<wheelLength; i++){
-			this.randomizeCurrentWordObjs()
+			//this.randomizeCurrentWordObjs()
 			for(var j = 0; j<this.wordBankObjs.length; j++){
 				this.wordBankObjs[j].wheelLengthXXX = (wheelLength-(Math.round(wheelLength/6)*(this.wordBankObjs.length - j)));
-				console.log(this.wordBankObjs[j].wheelLengthXXX)
 				if(i === this.wordBankObjs[j].wheelLengthXXX - 1){
-					this.wordBankObjs[j].$el.append(this.wordBankObjs[j].currentWordObj.$el)
+					var $nonClone = this.wordBankObjs[j].currentWordObj.$el
+					this.wordBankObjs[j].$el.append($nonClone)
+					this.wordBankObjs[j].actualCurrentWordObj = this.wordBankObjs[j].currentWordObj;
+					sentenceArray[j] = this.wordBankObjs[j].currentWordObj.word;
+					this.currentSentenceObj.wordBankObjs[j] = this.wordBankObjs[j].currentWordObj.word;
 				} else {
 					if(i < this.wordBankObjs[j].wheelLengthXXX - 1){
 						var $clone = this.wordBankObjs[j].currentWordObj.$el.clone()
 						this.wordBankObjs[j].$el.append($clone)
-						clones.push($clone);
+						this.clones.push($clone);
+						self.randomizeWordBankObj(self.wordBankObjs[j])
 					}
 				}
 			}			
 		}
-
+		var sentenceX = sentenceArray.join('');
+		this.currentSentence = sentenceX;
+		this.currentSentenceObj.sentence = sentenceX;
+	}
+	sloganizer.prototype.insertWheelsAnimateAndResolveSentence = function(){
+		var self = this;
+		var callbackCount = 0;
 		for(var j = 0; j<this.wordBankObjs.length; j++){
 			self.settings.$el.append(self.wordBankObjs[j].$el)
 			Tools.dom.cssTransitioner2({
@@ -64,19 +78,81 @@
 				ease: 'ease-out',
 				duration:this.wordBankObjs[j].wheelLengthXXX * 110,
 				callback: function($that){
-					console.log('original callback')
 					if(callbackCount === self.wordBankObjs.length - 1){
-						console.log('done!!!',clones.length)
+						for(var k = 0, n = self.clones.length; k < n; k++){
+							self.clones[k].remove()
+						}
+						var $tempWheelContainer = $('<div style="position:absolute;opacity:0;"></div>');
+						self.settings.$el.append($tempWheelContainer);
+						var compactSentenceWidth = 0;
+						var fullWidth = 0;
+						var sentence = '';
+						for(var k = 0, n = self.wordBankObjs.length; k < n; k++){
+							
+							sentence += self.wordBankObjs[k].currentWord;
+							fullWidth += (self.wordBankObjs[k].widestWordWidth);
+							compactSentenceWidth += self.wordBankObjs[k].actualCurrentWordObj.width;
+							self.wordBankObjs[k].$el.css({'top':'0'})
+							var $tempWheel = self.wordBankObjs[k].$el.clone();
+							$tempWheel.css('width','')
+							$tempWheelContainer.append($tempWheel)
+							self.wordBankObjs[k].horizontalShift = $tempWheel.offset().left - self.wordBankObjs[k].actualCurrentWordObj.$el.offset().left;
+						}
+						var shiftMiddleAdjustValue = (fullWidth - compactSentenceWidth)/2;
+						$tempWheelContainer.remove();
+
+						var callbackCount2 = 0;
+						for(var k = 0, n = self.wordBankObjs.length; k < n; k++){
+							Tools.dom.cssTransitioner2({
+								target: self.wordBankObjs[k].$el,
+								cssProperty: Tools.dom.translate3dKey,
+								cssValue: {
+									type:'translate3d',
+									values:[self.wordBankObjs[k].horizontalShift + shiftMiddleAdjustValue,0,1]
+								},
+								duration: 500,
+								ease: 'ease-out',
+								duration:1000,
+								callback: function($that){
+									console.log('TTTTTTERTRTRT')
+									if(callbackCount2 === n - 1){
+										self.currentSentenceObj.$el = $('<div style="position:absolute;top:0;z-index:9999;width:'+fullWidth+'px;text-align:center;">'+self.currentSentence+'</div>');
+										self.settings.$el.prepend(self.currentSentenceObj.$el)
+										for(var a = 0, z = self.wordBankObjs.length; a < z; a++){
+											self.wordBankObjs[a].$el.remove();
+										}
+									}
+									callbackCount2++;
+								}
+							});
+						}
+
+
+						
 
 					} else {
+
 						console.log('not',callbackCount)
 					}
 					callbackCount ++;
 				}
 			});
 		}
+
+	}
+	sloganizer.prototype.summonWheels = function(wheelLength){
+		var self = this;
+		this.currentSentenceObj.$el.remove()
+		
+		self.formulateWheelsAndSentence(wheelLength)
+		self.insertWheelsAnimateAndResolveSentence()
+
+		
 	};
 	sloganizer.prototype.initialize = function(){
+		var self = this;
+		
+		console.log(self.currentSentenceObj.$el.length)
 		var wordHeight = 0;
 		
 		for(var i = 0, l = this.settings.wordBanks.length; i<l; i++){
@@ -112,7 +188,7 @@
 				})
 				wordObjs.push({
 					$el:$word,
-					word:wordClean,
+					word:word,
 					width:wordWidth
 				})
 			}
@@ -120,12 +196,13 @@
 				'width':widestWord+'px'
 				//'height':(this.settings.wordBanks[i].length * wordHeight)+'px',
 			});
-			//console.log(widestWord)
+			console.log(this.settings.wordBanks[0])
 			this.wordBankObjs.push({
 				$el:$wheel,
+				widestWordWidth: widestWord,
 				wordObjs:wordObjs,
 				wordBank:this.settings.wordBanks[i],
-				currentWordObj:null,
+				currentWordObj:wordObjs[0],
 				dyingWordObj:null,
 				currentSentence:null,
 				currentIndex:0,
@@ -143,7 +220,8 @@
 		}
 	}
 	sloganizer.prototype.randomizeCurrentWordObjs = function(){
-		var sentence = ''
+		var self = this;
+		self.currentSentence = ''
 		for(var i = 0, l = this.wordBankObjs.length; i<l; i++){
 			this.wordBankObjs[i].dyingWordObj = this.wordBankObjs[i].currentWordObj
 			var wordObjs = this.wordBankObjs[i].wordObjs;
@@ -171,12 +249,42 @@
 			}
 			var indexedWordObj = wordObjs[this.wordBankObjs[i].currentIndex]
 
-			sentence += indexedWordObj.word;
-
+			self.currentSentence += indexedWordObj.word;
+			//console.log(self.currentSentence)
 			this.wordBankObjs[i].currentWordObj = indexedWordObj;
 			
 		}
-		//console.log(sentence)
+	}
+
+	sloganizer.prototype.randomizeWordBankObj = function(wordBankObj){
+		var self = this;
+		wordBankObj.dyingWordObj = wordBankObj.currentWordObj
+		var wordObjs = wordBankObj.wordObjs;
+		wordBankObj.dyingIndex = wordBankObj.currentIndex;
+		wordBankObj.dyingWord = wordBankObj.currentWord;
+		if(wordObjs.length === 1){
+
+		} else 
+		if(wordObjs.length <= 2){
+			if(wordBankObj.currentIndex === 0){
+				wordBankObj.currentIndex = 1;
+			} else {
+				wordBankObj.currentIndex = 0;
+			}
+		} else {
+			var randomIndex = Tools.math.returnRandomInt(0,wordObjs.length - 1);
+			if(randomIndex === wordBankObj.currentIndex){
+				randomIndex += 1;
+				if(randomIndex > wordObjs.length - 1){
+					randomIndex += -2;
+				}
+			}
+			
+			wordBankObj.currentIndex = randomIndex;
+		}
+		var indexedWordObj = wordObjs[wordBankObj.currentIndex]
+		wordBankObj.currentWordObj = indexedWordObj;
+		console.log(indexedWordObj.word)
 	}
 
 

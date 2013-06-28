@@ -20,7 +20,8 @@ $(function() {
 
 	mySloganizer.summonWheels(25);
 	$sloganizerWrapper.find('.randomizeButton').on('click',function(){
-		mySloganizer.summonWheels(5);
+		//mySloganizer.initialize(25);
+		mySloganizer.summonWheels(25);
 	})
 		
 });

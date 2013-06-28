@@ -123,7 +123,6 @@
 		var modernizrPrefixedTransform = Modernizr.prefixed('transform')
 		if(modernizrPrefixedTransform == false){modernizrPrefixedTransform='ie7or8'}
 		modernizrPrefixedTransform = modernizrPrefixedTransform.replace(/([A-Z])/g, function(modernizrPrefixedTransform,m1){ return '-' + m1.toLowerCase(); }).replace(/^ms-/,'-ms-');
-		console.log(modernizrPrefixedTransform)
 		return modernizrPrefixedTransform;
 	}
 	dom.prototype.translate3dValue = function(x,y,z){
@@ -146,7 +145,6 @@
 		if(typeof cssTransObj.cssValue === 'object'){
 			if(cssTransObj.cssValue.type ==='translate3d'){
 				var cssData = {
-					'background':'red',
 					'position':'relative',
 					'left':cssTransObj.cssValue.values[0]+'px',
 					'top':cssTransObj.cssValue.values[1]+'px'
@@ -157,7 +155,6 @@
 					cssTransObj.cssValue = 'translate3d(0px, 0px, 0px)';
 					var cssTransObjClone = $.extend({},cssTransObj,{})
 					cssTransObj.callback = function(){
-						console.log('new callback');
 						cssTransObjClone.callback();
 					}
 					//var asdf = $.extend({},cssTransObj,{})
@@ -185,7 +182,6 @@
 			'-webkit-transition': cssTransObj.cssProperty+' '+cssTransObj.duration+'ms '+cssTransObj.ease
 		})
 		cssTransObj.target.bind("transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd",function(event){
-			console.log('eee')
 			if(cssTransObj.target.is($(event.target))){//a selector of more than one jqueryObject might be passed.  Also, there could be transitions on child element (like buttons) and child element transitions trigger the callback.  So this conditional confirms that it's the targeted element itself that gets listened to and this works for a selector of multiple elements.
 			//if(event.target == cssTransObj.target[0]){
 				//(event.originalEvent.propertyName + ' - - - ping')
