@@ -3,7 +3,6 @@ $(function() {
 	var $sloganizerWrapper = $('.mySloganizerWrapper');
 	mySloganizer = Sloganizer.createSloganizer({
 		$el: $sloganizerWrapper.find('.sloganizer'),
-		wheelWordCount:3,
 		wordBanks: [
 			['Boomer','Behemoth','Kriksis'],
 			['is','isn\'t'],
@@ -20,7 +19,6 @@ $(function() {
 
 	mySloganizer.summonWheels(25);
 	$sloganizerWrapper.find('.randomizeButton').on('click',function(){
-		//mySloganizer.initialize(25);
 		mySloganizer.summonWheels(25);
 	})
 		

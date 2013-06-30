@@ -16,11 +16,11 @@
 	var sloganizer= function(options){
 		var defaults = {
 			$el: '',
-			wheelWordCount:6,
 			wordBanks:'',
 			initialSentenceArray: ['Which','cat','is','good?']
 		};
 		this.settings = $.extend({}, defaults, options);
+		this.sentenceFormed = false;
 		this.wordHeight = 0;
 		this.currentSentenceObj = {
 			sentence: '',
@@ -29,9 +29,9 @@
 		};
 		this.wordBankObjs = [];
 		this.clones=$();
-
+		this.$wheels = $();
+		this.shiftMiddleAdjustValue = 0;
 		this.initialize()
-		
 		
 	};
 	sloganizer.prototype.formulateWheelsAndSentence = function(wheelLength){
@@ -90,110 +90,161 @@
 		wordBankObj.currentBankAssignedWordObj = indexedWordObj;
 		return indexedWordObj;
 	}
-	sloganizer.prototype.lateralAnimation = function(){
+	sloganizer.prototype.animateSlots = function(){
 		var self = this;
-	}
-	sloganizer.prototype.insertWheelsAnimateAndResolveSentence = function(){
-		var self = this;
-		var callbackCount = 0;
-		for(var j = 0; j<this.wordBankObjs.length; j++){
-			self.settings.$el.append(self.wordBankObjs[j].$el)
-			Tools.dom.cssTransitioner2({
-				target: self.wordBankObjs[j].$el,
+		
+		if(self.sentenceFormed){
+
+			//priming lateral animation
+			Tools.dom.cssTransitioner({
+				target: self.$wheels,
 				cssProperty: Tools.dom.translate3dKey,
-				cssValue: {
-					type:'translate3d',
-					values:[0,-(this.wordBankObjs[j].wheelLengthXXX - 1)*this.wordHeight,0]
-				},
+				cssValue: 'translate3d(0,0,0)',
 				duration: 500,
-				ease: 'ease-out',
-				duration:this.wordBankObjs[j].wheelLengthXXX * 110,
+				ease: 'ease-in-out',
 				callback: function($that){
-					if(callbackCount === self.wordBankObjs.length - 1){
-						for(var k = 0, n = self.clones.length; k < n; k++){
-							self.clones[k].remove()
-						}
-						var $tempWheelContainer = $('<div style="position:absolute;opacity:0;"></div>');
-						self.settings.$el.append($tempWheelContainer);
-						var compactSentenceWidth = 0;
-						var fullWidth = 0;
-						var sentence = '';
-						for(var k = 0, n = self.wordBankObjs.length; k < n; k++){
-							
-							sentence += self.wordBankObjs[k].currentWord;
-							fullWidth += (self.wordBankObjs[k].widestWordWidth);
-							compactSentenceWidth += self.wordBankObjs[k].currentSentenceAssignedWordObj.width;
-							self.wordBankObjs[k].$el.css({'top':'0'})
-							var $tempWheel = self.wordBankObjs[k].$el.clone();
-							$tempWheel.css('width','')
-							$tempWheelContainer.append($tempWheel)
-							self.wordBankObjs[k].horizontalShift = $tempWheel.offset().left - self.wordBankObjs[k].currentSentenceAssignedWordObj.$el.offset().left;
-						}
-						var shiftMiddleAdjustValue = (fullWidth - compactSentenceWidth)/2;
-						$tempWheelContainer.remove();
-
-						var callbackCount2 = 0;
-						for(var k = 0, n = self.wordBankObjs.length; k < n; k++){
-							Tools.dom.cssTransitioner2({
-								target: self.wordBankObjs[k].$el,
-								cssProperty: Tools.dom.translate3dKey,
-								cssValue: {
-									type:'translate3d',
-									values:[self.wordBankObjs[k].horizontalShift + shiftMiddleAdjustValue,0,1]
-								},
-								duration: 500,
-								ease: 'ease-out',
-								duration:1000,
-								callback: function($that){
-									if(callbackCount2 === n - 1){
-										self.currentSentenceObj.$el = $('<div style="position:absolute;top:0;z-index:9999;width:'+fullWidth+'px;text-align:center;">'+self.currentSentenceObj.sentence+'</div>');
-										self.settings.$el.prepend(self.currentSentenceObj.$el)
-										for(var a = 0, z = self.wordBankObjs.length; a < z; a++){
-											self.wordBankObjs[a].$el.remove();
-											self.wordBankObjs[a].$el.css('left','0');
-
-											reprimeWordObjsArrayForCurrent(self.wordBankObjs[a])
-											function reprimeWordObjsArrayForCurrent(wordBankObj){
-												var index = wordBankObj.wordObjs.indexOf(wordBankObj.currentSentenceAssignedWordObj)
-												var currentTempRemoved = self.wordBankObjs[a].wordObjs.splice(index, 1);
-												wordBankObj.wordObjs.unshift(currentTempRemoved[0])
-												
-											}
-											console.log(self.wordBankObjs[a].wordObjs[0])
-											//SECOND SPIN
-											//SECOND SPIN
-											//SECOND SPIN
-											//SECOND SPIN
-											//SECOND SPIN
-											console.log(self.wordBankObjs[a].currentBankAssignedWordObj,self.wordBankObjs[a].currentSentenceAssignedWordObj)
-											setTimeout(function(){
-												//self.currentSentenceObj.$el.remove()
-												self.formulateWheelsAndSentence(25)
-												//self.insertWheelsAnimateAndResolveSentence()
-											},1000)
-											
-
-										}
-									}
-									callbackCount2++;
-								}
-							});
-						}
-					} else {
-
-					}
-					callbackCount ++;
+					slotAnimation();
 				}
 			});
+		} else {
+			slotAnimation()
+		}
+		function slotAnimation(){
+			var callbackCount = 0;
+			for(var j = 0; j<self.wordBankObjs.length; j++){
+				Tools.dom.cssTransitioner2({
+					target: self.wordBankObjs[j].$el,
+					cssProperty: Tools.dom.translate3dKey,
+					cssValue: {
+						type:'translate3d',
+						values:[0,-(self.wordBankObjs[j].wheelLengthXXX - 1)*self.wordHeight,0]
+					},
+					duration: 500,
+					ease: 'ease-out',
+					duration:self.wordBankObjs[j].wheelLengthXXX * 110,
+					callback: function($that){
+						if(callbackCount === self.wordBankObjs.length - 1){
+							for(var k = 0, n = self.clones.length; k < n; k++){
+								self.clones[k].remove()
+							}
+							self.lateralAnimation()
+						} else {
+
+						}
+						callbackCount ++;
+					}//end slot animation callback
+				});
+			}
 		}
 	}
+	//self.settings.$el GOOD, self.$wheels, self.wordBankObjs, .widestWordWidth, currentSentenceAssignedWordObj.width
+	sloganizer.prototype.setFullWidthAndShiftMiddleAdjustValuesAndHorizontalShifts = function(){
+		var self = this;
+		var $tempWheelContainer = $('<div style="position:absolute;opacity:0;"></div>');
+		self.settings.$el.append($tempWheelContainer);
+		var compactSentenceWidth = 0;
+		self.fullWidth = 0;
+		self.$wheels.css({'top':'0'})
+		for(var k = 0, n = self.wordBankObjs.length; k < n; k++){			
+			self.fullWidth += (self.wordBankObjs[k].widestWordWidth);
+			compactSentenceWidth += self.wordBankObjs[k].currentSentenceAssignedWordObj.width;
+			var $tempWheel = self.wordBankObjs[k].$el.clone();
+			$tempWheel.css('width','')
+			$tempWheelContainer.append($tempWheel)
+			self.wordBankObjs[k].horizontalShift = $tempWheel.offset().left - self.wordBankObjs[k].currentSentenceAssignedWordObj.$el.offset().left;
+		}
+		self.shiftMiddleAdjustValue = (self.fullWidth - compactSentenceWidth)/2;
+		$tempWheelContainer.remove();
+	}
+	sloganizer.prototype.lateralAnimation = function(){
+		var self = this;
+		self.setFullWidthAndShiftMiddleAdjustValuesAndHorizontalShifts()
+		var callbackCount2 = 0;
+		for(var k = 0, n = self.wordBankObjs.length; k < n; k++){
+			self.wordBankObjs[k].shiftAmount = self.wordBankObjs[k].horizontalShift + self.shiftMiddleAdjustValue;
+			console.log(self.wordBankObjs[k].horizontalShift,self.shiftMiddleAdjustValue)
+
+			var appendSentenceAndPrimeForMore = function(){
+				console.log('e')
+				self.currentSentenceObj.$el = $('<div style="position:absolute;top:0;z-index:9999;width:'+self.fullWidth+'px;text-align:center;">'+self.currentSentenceObj.sentence+'</div>');
+				self.settings.$el.prepend(self.currentSentenceObj.$el)
+				self.sentenceFormed = true;
+				for(var a = 0, z = self.wordBankObjs.length; a < z; a++){
+					self.wordBankObjs[a].$el.remove();
+					// self.wordBankObjs[a].$el.css({
+					// 	'left':'0'
+					// });
+
+					reprimeWordObjsArrayForCurrent(self.wordBankObjs[a])
+					function reprimeWordObjsArrayForCurrent(wordBankObj){
+						var index = wordBankObj.wordObjs.indexOf(wordBankObj.currentSentenceAssignedWordObj)
+						var currentTempRemoved = self.wordBankObjs[a].wordObjs.splice(index, 1);
+						wordBankObj.wordObjs.unshift(currentTempRemoved[0])
+						wordBankObj.$el.css({
+							'left':'0',
+							'-webkit-transform':'translate3d('+(self.wordBankObjs[a].shiftAmount)+'px,0,0)'
+						})
+						
+					}
+					
+
+					self.isInstantly = false;
+
+					self.isLocked = false;
+					//END OF THE SEQUENCE
+					//END OF THE SEQUENCE
+					//END OF THE SEQUENCE
+					//END OF THE SEQUENCE
+
+				}
+			}
+			if(self.isInstantly){
+				if(callbackCount2 === n - 1){
+					appendSentenceAndPrimeForMore()
+				}
+				callbackCount2++;	
+			} else {
+
+				Tools.dom.cssTransitioner2({
+					target: self.wordBankObjs[k].$el,
+					cssProperty: Tools.dom.translate3dKey,
+					cssValue: {
+						type:'translate3d',
+						values:[self.wordBankObjs[k].shiftAmount,0,1]
+					},
+					duration: 500,
+					ease: 'ease-out',
+					duration:1000,
+					callback: function($that){
+						if(callbackCount2 === n - 1){
+							appendSentenceAndPrimeForMore()
+						}
+						callbackCount2++;
+					}
+				});
+			}
+		}
+	}
+	
 	sloganizer.prototype.summonWheels = function(wheelLength){
 		var self = this;
-		this.currentSentenceObj.$el.remove()
-		
-		self.formulateWheelsAndSentence(wheelLength)
-		self.insertWheelsAnimateAndResolveSentence()
-
+		if(!self.isLocked){
+			self.isLocked = true;
+			console.log('d')
+			this.currentSentenceObj.$el.remove()
+			
+			self.formulateWheelsAndSentence(wheelLength)
+			if(self.isInstantly){
+				for(var k = 0, n = self.clones.length; k < n; k++){
+					self.clones[k].remove()
+				}
+				self.settings.$el.append(self.$wheels)
+				self.lateralAnimation()
+			} else {
+				self.settings.$el.append(self.$wheels)
+				self.animateSlots()
+			}
+		}
 		
 	};
 	sloganizer.prototype.returnWordObj = function(word,isEndOfSentence,$wheel){
@@ -226,12 +277,18 @@
 	}
 	sloganizer.prototype.initialize = function(){
 		var self = this;
+		this.isLocked = false;
+		self.isInstantly = true;
+
+		
 		
 		self.wordHeight = 0;
 		
 		for(var i = 0, l = this.settings.wordBanks.length; i<l; i++){
 			var isEndOfSentence = l - i === 1 ? true : false;
 			var $wheel = $('<div class="sloganizerWheel" style="float:left;position:relative;"></div>');
+			self.$wheels = self.$wheels.add($wheel);
+
 			this.settings.$el.append($wheel);
 			var widestWord = 0;
 			var wordObjs =[];
@@ -262,6 +319,7 @@
 				currentBankAssignedWordObj:intitialWordObj,
 				dyingWordObj:null,
 				currentWord:intitialWordObj.word,
+				shiftAmount:0
 			})
 			$wheel.remove()
 			
