@@ -13,11 +13,11 @@
 
 	//************
 	//LOGIC HERE
-	var sloganizer= function(options){
+	var sloganizer= function(options){ 
 		var defaults = {
 			$el: '',
 			wordBanks:'',
-			initialSentenceArray: ['Which','cat','is','good?']
+			initialSentenceArray: ['Boomer2','was','isconsitently','not good.']
 		};
 		this.settings = $.extend({}, defaults, options);
 		this.sentenceFormed = false;
