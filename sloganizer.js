@@ -16,16 +16,15 @@
 	var sloganizer= function(options){ 
 		var defaults = {
 			$el: '',
-			wordBanks:'',
-			initialSentenceArray: ['Boomer2','was','isconsitently','not good.']
+			wordBanks:[],
+			initialSentenceArray: ['Boomer2','was','rarely','not good.']
 		};
 		this.settings = $.extend({}, defaults, options);
-		this.sentenceFormed = false;
 		this.wordHeight = 0;
 		this.currentSentenceObj = {
 			sentence: '',
 			$el: $(),
-			wordBankObjs: []
+			wordObjs: []
 		};
 		this.wordBankObjs = [];
 		this.clones=$();
@@ -36,22 +35,20 @@
 	};
 	sloganizer.prototype.formulateWheelsAndSentence = function(wheelLength){
 		var self = this;
+		this.$wheels.children().remove();
 		var sentenceArray = [];
-		for(var j = 0; j<this.wordBankObjs.length; j++){
-			this.wordBankObjs[j].$el.children().remove()
-		}
 		for(var i = 0; i<wheelLength; i++){//need to swap this loop with the one below somehow, and integrate the loop above into the mess.
 			for(var j = 0; j<this.wordBankObjs.length; j++){
 				var wordBankObj = self.wordBankObjs[j];
 				this.wordBankObjs[j].wheelLengthXXX = (wheelLength-(Math.round(wheelLength/6)*(this.wordBankObjs.length - j)));
 				if(i === this.wordBankObjs[j].wheelLengthXXX - 1){//For the last iteration, make sure it's not a repeat, and update sentence object
-					if(this.currentSentenceObj.wordBankObjs[j] === wordBankObj.currentSentenceAssignedWordObj){
+					if(this.currentSentenceObj.wordObjs[j] === wordBankObj.currentSentenceAssignedWordObj){
 						wordBankObj.currentSentenceAssignedWordObj = self.returnRandomWordObj(self.wordBankObjs[j])
 					}
 					var $nonClone = this.wordBankObjs[j].currentSentenceAssignedWordObj.$el
 					this.wordBankObjs[j].$el.append($nonClone)
 					sentenceArray[j] = this.wordBankObjs[j].currentSentenceAssignedWordObj.word;
-					this.currentSentenceObj.wordBankObjs[j] = this.wordBankObjs[j].currentSentenceAssignedWordObj;
+					this.currentSentenceObj.wordObjs[j] = this.wordBankObjs[j].currentSentenceAssignedWordObj;
 				} else {
 					if(i < this.wordBankObjs[j].wheelLengthXXX - 1){
 						var $clone = this.wordBankObjs[j].currentSentenceAssignedWordObj.$el.clone()
@@ -92,23 +89,18 @@
 	}
 	sloganizer.prototype.animateSlots = function(){
 		var self = this;
+		//priming lateral animation
+		Tools.dom.cssTransitioner({
+			target: self.$wheels,
+			cssProperty: Tools.dom.translate3dKey,
+			cssValue: 'translate3d(0,0,0)',
+			duration: 500,
+			ease: 'ease-in-out',
+			callback: function($that){
+				slotAnimation();
+			}
+		});
 		
-		if(self.sentenceFormed){
-
-			//priming lateral animation
-			Tools.dom.cssTransitioner({
-				target: self.$wheels,
-				cssProperty: Tools.dom.translate3dKey,
-				cssValue: 'translate3d(0,0,0)',
-				duration: 500,
-				ease: 'ease-in-out',
-				callback: function($that){
-					slotAnimation();
-				}
-			});
-		} else {
-			slotAnimation()
-		}
 		function slotAnimation(){
 			var callbackCount = 0;
 			for(var j = 0; j<self.wordBankObjs.length; j++){
@@ -145,6 +137,7 @@
 		var compactSentenceWidth = 0;
 		self.fullWidth = 0;
 		self.$wheels.css({'top':'0'})
+
 		for(var k = 0, n = self.wordBankObjs.length; k < n; k++){			
 			self.fullWidth += (self.wordBankObjs[k].widestWordWidth);
 			compactSentenceWidth += self.wordBankObjs[k].currentSentenceAssignedWordObj.width;
@@ -153,6 +146,7 @@
 			$tempWheelContainer.append($tempWheel)
 			self.wordBankObjs[k].horizontalShift = $tempWheel.offset().left - self.wordBankObjs[k].currentSentenceAssignedWordObj.$el.offset().left;
 		}
+		self.settings.$el.css('min-width',self.fullWidth+'px')
 		self.shiftMiddleAdjustValue = (self.fullWidth - compactSentenceWidth)/2;
 		$tempWheelContainer.remove();
 	}
@@ -168,7 +162,6 @@
 				console.log('e')
 				self.currentSentenceObj.$el = $('<div style="position:absolute;top:0;z-index:9999;width:'+self.fullWidth+'px;text-align:center;">'+self.currentSentenceObj.sentence+'</div>');
 				self.settings.$el.prepend(self.currentSentenceObj.$el)
-				self.sentenceFormed = true;
 				for(var a = 0, z = self.wordBankObjs.length; a < z; a++){
 					self.wordBankObjs[a].$el.remove();
 					// self.wordBankObjs[a].$el.css({
@@ -186,17 +179,13 @@
 						})
 						
 					}
-					
-
-					self.isInstantly = false;
-
-					self.isLocked = false;
-					//END OF THE SEQUENCE
-					//END OF THE SEQUENCE
-					//END OF THE SEQUENCE
-					//END OF THE SEQUENCE
-
 				}
+				self.isInstantly = false;
+				self.isLocked = false;
+				//END OF THE SEQUENCE
+				//END OF THE SEQUENCE
+				//END OF THE SEQUENCE
+				//END OF THE SEQUENCE
 			}
 			if(self.isInstantly){
 				if(callbackCount2 === n - 1){
@@ -296,7 +285,7 @@
 			widestWord = intitialWordObj.width;
 			wordObjs.push(intitialWordObj)
 
-			this.currentSentenceObj.wordBankObjs[i] = intitialWordObj;
+			this.currentSentenceObj.wordObjs[i] = intitialWordObj;
 
 			for(var j = 0, m = this.settings.wordBanks[i].length; j<m; j++){
 				var word = (this.settings.wordBanks[i][j]);
@@ -308,7 +297,6 @@
 			}
 			$wheel.css({
 				'width':widestWord+'px'
-				//'height':(this.settings.wordBanks[i].length * wordHeight)+'px',
 			});
 			this.wordBankObjs.push({
 				$el:$wheel,
