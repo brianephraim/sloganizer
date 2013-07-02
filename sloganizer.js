@@ -130,29 +130,27 @@
 		}
 	}
 	//self.settings.$el GOOD, self.$wheels, self.wordBankObjs, .widestWordWidth, currentSentenceAssignedWordObj.width
-	sloganizer.prototype.setFullWidthAndShiftMiddleAdjustValuesAndHorizontalShifts = function(){
+	sloganizer.prototype.shiftMiddleAdjustValuesAndHorizontalShifts = function(){
 		var self = this;
-		var $tempWheelContainer = $('<div style="position:absolute;opacity:0;"></div>');
+		var $tempWheelContainer = $('<div style="position:absolute;opacity:1;width:'+self.fullWidth+'px"></div>');
 		self.settings.$el.append($tempWheelContainer);
 		var compactSentenceWidth = 0;
-		self.fullWidth = 0;
 		self.$wheels.css({'top':'0'})
 
 		for(var k = 0, n = self.wordBankObjs.length; k < n; k++){			
-			self.fullWidth += (self.wordBankObjs[k].widestWordWidth);
 			compactSentenceWidth += self.wordBankObjs[k].currentSentenceAssignedWordObj.width;
 			var $tempWheel = self.wordBankObjs[k].$el.clone();
 			$tempWheel.css('width','')
 			$tempWheelContainer.append($tempWheel)
 			self.wordBankObjs[k].horizontalShift = $tempWheel.offset().left - self.wordBankObjs[k].currentSentenceAssignedWordObj.$el.offset().left;
 		}
-		self.settings.$el.css('min-width',self.fullWidth+'px')
+		self.settings.$el.css('width',(self.fullWidth)+'px')
 		self.shiftMiddleAdjustValue = (self.fullWidth - compactSentenceWidth)/2;
 		$tempWheelContainer.remove();
 	}
 	sloganizer.prototype.lateralAnimation = function(){
 		var self = this;
-		self.setFullWidthAndShiftMiddleAdjustValuesAndHorizontalShifts()
+		self.shiftMiddleAdjustValuesAndHorizontalShifts()
 		var callbackCount2 = 0;
 		for(var k = 0, n = self.wordBankObjs.length; k < n; k++){
 			self.wordBankObjs[k].shiftAmount = self.wordBankObjs[k].horizontalShift + self.shiftMiddleAdjustValue;
@@ -272,7 +270,6 @@
 		
 		
 		self.wordHeight = 0;
-		
 		for(var i = 0, l = this.settings.wordBanks.length; i<l; i++){
 			var isEndOfSentence = l - i === 1 ? true : false;
 			var $wheel = $('<div class="sloganizerWheel" style="float:left;position:relative;"></div>');
@@ -309,14 +306,18 @@
 				currentWord:intitialWordObj.word,
 				shiftAmount:0
 			})
-			$wheel.remove()
-			
-			this.settings.$el.css({
-				'height':this.wordHeight + 'px',
-				'overflow':'hidden'
-			});
-			
+			$wheel.remove()			
 		}
+
+		self.fullWidth = 0;
+		for(var i = 0, l = this.wordBankObjs.length; i<l; i++){
+			self.fullWidth += this.wordBankObjs[i].widestWordWidth;
+		}
+		this.settings.$el.css({
+			'height':this.wordHeight + 'px',
+			'overflow':'hidden',
+			'width':self.fullWidth+'px'
+		});
 	}
 	
 
