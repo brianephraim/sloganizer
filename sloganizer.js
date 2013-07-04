@@ -17,19 +17,9 @@
 		var defaults = {
 			$el: '',
 			wordBanks:[],
-			initialSentenceArray: ['Sharkypoo','will be','boringly','lame.']
+			initialSentenceArray: ['Make','random','slogans','now.']
 		};
 		this.settings = $.extend({}, defaults, options);
-		this.wordHeight = 0;
-		this.currentSentenceObj = {
-			sentence: '',
-			$el: $(),
-			wordObjs: []
-		};
-		this.wheelObjs = [];
-		this.clones=$();
-		this.$wheels = $();
-		this.shiftMiddleAdjustValue = 0;
 		this.initialize()
 		
 	};
@@ -266,7 +256,31 @@
 		}
 
 	}
+	sloganizer.prototype.reinitialize = function(){
+		var self = this;
+		var initialSentenceArray = this.settings.initialSentenceArray;
+		
+		for(var i = 0, l = initialSentenceArray.length; i < l; i++){
+			this.settings.initialSentenceArray[i] = this.currentSentenceObj.wordObjs[i].word.replace('&nbsp;','');
+		}
+		this.currentSentenceObj.$el.remove();
+		this.initialize();
+		mySloganizer.summonWheels(25);
+		
+	}
 	sloganizer.prototype.initialize = function(){
+		
+		this.wordHeight = 0;
+		this.currentSentenceObj = {
+			sentence: '',
+			$el: $(),
+			wordObjs: []
+		};
+		this.wheelObjs = [];
+		this.clones=$();
+		this.$wheels = $();
+		this.shiftMiddleAdjustValue = 0;
+
 		var self = this;
 		this.isLocked = false;
 		self.isInstantly = true;
@@ -285,6 +299,11 @@
 			var intitialWordObj = self.returnWordObj(self.settings.initialSentenceArray[i],isEndOfSentence,$wheel);
 			widestWord = intitialWordObj.width;
 			wordObjs.push(intitialWordObj)
+
+			//if wordBank doesn't already have the initial sentences word for this slot, then add it to the settings.wordBank
+			if(this.settings.wordBanks[i].indexOf(this.settings.initialSentenceArray[i]) === -1){
+				this.settings.wordBanks[i].push(this.settings.initialSentenceArray[i])
+			}
 
 			this.currentSentenceObj.wordObjs[i] = intitialWordObj;
 

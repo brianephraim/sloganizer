@@ -14,4 +14,6 @@
 	
 }
 body{margin:0 auto;}
-.mySloganizerWrapper{width:80%;margin:20% auto;position:relative;background:#ddd;font-size:40px;}
+.mySloganizerWrapper{position:relative;background:#ddd;font-size:40px;}
+.sloganizer{margin:0 auto;position:relative;}
+h1{text-align:center;font-size:50px;}
