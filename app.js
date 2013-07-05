@@ -25,7 +25,7 @@ $(function() {
 	})
 
 	$sloganizerWrapper.find('.resizeButton').on('click',function(){
-		mySloganizer.settings.$el.css('font-size','20px')
+		mySloganizer.$el.css('font-size','20px')
 		mySloganizer.reinitialize()
 	})
 		
