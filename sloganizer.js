@@ -31,14 +31,23 @@
 			for(var j = 0; j<this.wheelObjs.length; j++){
 				var wheelObj = self.wheelObjs[j];
 				this.wheelObjs[j].wheelLengthXXX = (wheelLength-(Math.round(wheelLength/6)*(this.wheelObjs.length - j)));
-				if(i === this.wheelObjs[j].wheelLengthXXX - 1){//For the last iteration, make sure it's not a repeat, and update sentence object
-					if(wheelObj.currentWord !== null){
-						wheelObj.currentSentenceAssignedWordObj = wheelObj.wordObjs[0];
-						wheelObj.currentWord = null;
-					} else {
-						if(this.currentSentenceObj.wordObjs[j] === wheelObj.currentSentenceAssignedWordObj){
-							wheelObj.currentSentenceAssignedWordObj = self.returnRandomWordObj(self.wheelObjs[j])
+				if(i === this.wheelObjs[j].wheelLengthXXX - 1){//For the last iteration...
+					if(wheelObj.forcedWord !== null){//if there's a forced word on deck... use it;
+						wheelObj.currentSentenceAssignedWordObj = wheelObj.forcedWord;
+						wheelObj.forcedWord = null;
+					} else {//if there's no forced word on deck, get a random word...
+						var randomWordObj = self.returnRandomWordObj(self.wheelObjs[j]);
+						console.log('eee',wheelObj.currentSentenceAssignedWordObj.word,randomWordObj.word)
+						//check if that word is the current word on this wheel
+						if(wheelObj.currentSentenceAssignedWordObj.word === randomWordObj.word){//,if it is... 
+							//
+							console.log('REPEAT',randomWordObj)
+							randomWordObj = self.returnRandomWordObj(self.wheelObjs[j]);
 						}
+						wheelObj.currentSentenceAssignedWordObj = randomWordObj
+						// if(this.currentSentenceObj.wordObjs[j] === wheelObj.currentSentenceAssignedWordObj){
+						// 	wheelObj.currentSentenceAssignedWordObj = self.returnRandomWordObj(self.wheelObjs[j])
+						// }
 					}
 					var $nonClone = this.wheelObjs[j].currentSentenceAssignedWordObj.$el
 					this.wheelObjs[j].$el.append($nonClone)
@@ -61,15 +70,17 @@
 		var self = this;
 		var newIndex = 0;
 		var wordObjs = wordBankObj.wordObjs;
+		for(var i = 0, l = wordBankObj.wordObjs.length; i < l; i++){
+			//console.log(wordBankObj.wordObjs[i].word)
+		}
 		var currentWordObjIndex = wordBankObj.wordObjs.indexOf(wordBankObj.currentBankAssignedWordObj)
 		if(wordObjs.length === 1){
-
 		} else 
 		if(wordObjs.length === 2){
 			newIndex = currentWordObjIndex ===0 ? 1 : 0;
 		} else {
 			var randomIndex = Tools.math.returnRandomInt(0,wordObjs.length - 1);
-			if(randomIndex === currentWordObjIndex){
+			if(wordBankObj.currentBankAssignedWordObj.word === wordObjs[newIndex].word){
 				randomIndex += 1;
 				if(randomIndex > wordObjs.length - 1){
 					randomIndex += -2;
@@ -148,10 +159,8 @@
 		var callbackCount2 = 0;
 		for(var k = 0, n = self.wheelObjs.length; k < n; k++){
 			self.wheelObjs[k].shiftAmount = self.wheelObjs[k].horizontalShift + self.shiftMiddleAdjustValue;
-			console.log(self.wheelObjs[k].horizontalShift,self.shiftMiddleAdjustValue)
 
 			var appendSentenceAndPrimeForMore = function(){
-				console.log('e')
 				self.currentSentenceObj.$el = $('<div style="position:absolute;top:0;z-index:9999;width:'+self.fullWidth+'px;text-align:center;">'+self.currentSentenceObj.sentence+'</div>');
 				self.settings.$el.prepend(self.currentSentenceObj.$el)
 				for(var a = 0, z = self.wheelObjs.length; a < z; a++){
@@ -211,7 +220,6 @@
 		var self = this;
 		if(!self.isLocked){
 			self.isLocked = true;
-			console.log('d')
 			this.currentSentenceObj.$el.remove()
 			
 			self.formulateWheelsAndSentence(wheelLength)
@@ -300,13 +308,12 @@
 			widestWord = intitialWordObj.width;
 			wordObjs.push(intitialWordObj)
 
+
 			//if wordBank doesn't already have the initial sentences word for this slot, then add it to the settings.wordBank
-			if(this.settings.wordBanks[i].indexOf(this.settings.initialSentenceArray[i]) === -1){
-				this.settings.wordBanks[i].push(this.settings.initialSentenceArray[i])
-			}
+			
+			
 
 			this.currentSentenceObj.wordObjs[i] = intitialWordObj;
-
 			for(var j = 0, m = this.settings.wordBanks[i].length; j<m; j++){
 				var word = (this.settings.wordBanks[i][j]);
 				var wordObj = self.returnWordObj(word,isEndOfSentence,$wheel);
@@ -314,6 +321,10 @@
 				if(wordObj.width > widestWord){
 					widestWord = wordObj.width;
 				}
+			}
+
+			if(this.settings.wordBanks[i].indexOf(this.settings.initialSentenceArray[i]) === -1){
+				this.settings.wordBanks[i].push(this.settings.initialSentenceArray[i])
 			}
 			$wheel.css({
 				'width':widestWord+'px'
@@ -326,10 +337,10 @@
 				currentSentenceAssignedWordObj:intitialWordObj,
 				currentBankAssignedWordObj:intitialWordObj,
 				dyingWordObj:null,
-				currentWord:intitialWordObj.word,
+				forcedWord:intitialWordObj,
 				shiftAmount:0
 			})
-			$wheel.remove()			
+			$wheel.remove()	
 		}
 
 		self.fullWidth = 0;
