@@ -17,10 +17,12 @@
 		var defaults = {
 			$el: '',
 			wordBanks:[],
-			forcedSentenceArray: ['Make','random','slogans','now.']
+			forcedSentenceArray: ['Make','random','slogans','now.'],
+			initializeCallback:function(){}
 		};
 		this.settings = $.extend({}, defaults, options);
 
+		this.initializeCallback = this.settings.initializeCallback;
 		this.wordBanks = this.settings.wordBanks;
 		this.$el = this.settings.$el;
 		this.forcedSentenceArray = this.settings.forcedSentenceArray;
@@ -350,6 +352,7 @@
 			'overflow':'hidden',
 			'width':self.fullWidth+'px'
 		});
+		this.initializeCallback(this);
 	}
 	
 

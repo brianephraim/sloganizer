@@ -6,14 +6,15 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
+        <title>Sloganizer</title>
+        <meta http-equiv="CACHE-CONTROL" content="NO-CACHE">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
         <style>
             
         </style>
         <link rel="stylesheet" href="normalize.css" type="text/css" media="all" />
-        <link rel="stylesheet" href="sloganizer.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="sloganizer.css?1" type="text/css" media="all" />
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 		
     </head>
@@ -32,6 +33,17 @@
 				<button class="randomizeButton">Sloganize!</button>
 				<button class="resizeButton">resize!</button>
 			</div>
+			<h2>Word banks</h2>
+			<p>Each word slot in the slogan has a word bank.</p>
+			<p>Edit the word banks below.  Use commas to seperate each of the entries.</p>
+			<p>Note: Whatever word is part of the current sentence will be added to that words input field below when you click 'apply'.</p>
+			<div class="wordBanks">
+				<textarea></textarea>
+				<textarea></textarea>
+				<textarea></textarea>
+				<textarea></textarea>
+			</div>
+			<button class="applyButton">Apply</button>
 
 			<!--
 			<div class="twitterWidgetContainer">

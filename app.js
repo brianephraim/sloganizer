@@ -1,5 +1,7 @@
 var mySloganizer;
 $(function() {
+	var $wordBankTextAreas = $('.wordBanks textarea');
+
 	var $sloganizerWrapper = $('.mySloganizerWrapper');
 	mySloganizer = Sloganizer.createSloganizer({
 		$el: $sloganizerWrapper.find('.sloganizer'),
@@ -15,8 +17,27 @@ $(function() {
 			['adorable', 'adventurous', 'aggressive'],
 			['appeals','cans'],
 			['carefully.']
-		]
+		],
+		initializeCallback: function(that){
+			console.log('initializeCallback',that.wordBanks)
+			$wordBankTextAreas
+			for(var i=0, l=that.wordBanks.length; i<l; i++){
+				//that.wordBanks[i]
+				$wordBankTextAreas.eq(i).val(that.wordBanks[i])
+			}
 
+		}
+
+	})
+	$('.applyButton').on('click',function(){
+		$wordBankTextAreas.each(function(i){
+			var $this =  $(this);
+			console.log(i)
+			console.log($this)
+			mySloganizer.wordBanks[i] = $this.val().split(',')
+
+		})
+		mySloganizer.reinitialize()
 	})
 
 	mySloganizer.summonWheels(25);
@@ -28,5 +49,6 @@ $(function() {
 		mySloganizer.$el.css('font-size','20px')
 		mySloganizer.reinitialize()
 	})
+
 		
 });
