@@ -55,7 +55,6 @@
 					} else {
 						var randomWordObj = self.returnRandomWordObj(wheelObj);
 						if(randomWordObj.word === wheelObj.currentSentenceAssignedWordObj.word){
-							console.log('REPEAT',randomWordObj.word);
 							randomWordObj = self.returnRandomWordObj(wheelObj);
 						}
 
@@ -76,7 +75,6 @@
 		var newIndex = 0;
 		var wordObjs = wheelObj.wordObjs;
 		for(var i = 0, l = wheelObj.wordObjs.length; i < l; i++){
-			//console.log(wheelObj.wordObjs[i].word)
 		}
 		var currentWordObjIndex = wheelObj.wordObjs.indexOf(wheelObj.currentBankAssignedWordObj)
 		if(wordObjs.length === 1){
@@ -187,7 +185,6 @@
 				}
 				self.isInstantly = false;
 				self.isLocked = false;
-				console.log(self.currentSentenceObj.sentence.replace(/&nbsp;/g,' '))
 				//END OF THE SEQUENCE
 				//END OF THE SEQUENCE
 				//END OF THE SEQUENCE
@@ -244,7 +241,7 @@
 	sloganizer.prototype.returnWordObj = function(word,isEndOfSentence,$wheel){
 		var self = this;
 		var wordClean = word;
-		if(!isEndOfSentence){
+		if(!isEndOfSentence || word === ''){
 			word += '&nbsp;';
 		}
 		var $word = $('<div class="sloganizerWord" style="float:left;clear:both;margin:0 auto;opacity:0;">'+word+'</div>');
@@ -265,6 +262,7 @@
 		return {
 			$el:$word,
 			word:word,
+			unmodifiedWord:wordClean,
 			width:wordWidth
 		}
 
@@ -277,6 +275,38 @@
 		}
 		this.currentSentenceObj.$el.remove();
 		this.initialize();
+		mySloganizer.summonWheels(1);
+		
+	}
+	sloganizer.prototype.forceASentence = function(forcedArray){
+		var self = this;
+		if(forcedArray.length !== this.wheelObjs.length){
+			throw 'forced sentence array length must match number of wheels';
+		}
+
+
+		//If a bank doesn't have a forced word, push it.
+		for(var i=0,l=this.wordBanks.length; i<l; i++){
+			var indexOfForcedInWordBank = this.wordBanks[i].indexOf(forcedArray[i]);
+			if(indexOfForcedInWordBank === -1){
+				this.wordBanks[i].push(forcedArray[i])
+			}
+		}
+
+		//Make new pushed words into objects
+		this.reinitialize();
+
+		//Make the this.forcedSentenceArray the argued array value.
+		this.forcedSentenceArray = forcedArray;
+		//Set the forced word property for each wheel.
+		for(var i=0,l=this.wheelObjs.length; i<l; i++){
+			for(var j=0, m=this.wheelObjs[i].wordObjs.length; j<m; j++){
+				if(this.wheelObjs[i].wordObjs[j].unmodifiedWord===this.forcedSentenceArray[i]){
+					this.wheelObjs[i].forcedWord = this.wheelObjs[i].wordObjs[j]
+				}
+			}
+		}
+
 		mySloganizer.summonWheels(25);
 		
 	}
@@ -313,16 +343,19 @@
 			
 			
 			
-
+			//Create a wordObj for each word in the wordbank, push to array, and update widest
 			for(var j = 0, m = this.wordBanks[i].length; j<m; j++){
-				var word = (this.wordBanks[i][j]);
-				var wordObj = self.returnWordObj(word,isEndOfSentence,$wheel);
-				wordObjs.push(wordObj)
-				if(wordObj.width > widestWord){
-					widestWord = wordObj.width;
+				if(this.forcedSentenceArray.indexOf(this.wordBanks[i]) === -1){//prevent forced words from pushing again
+					var word = (this.wordBanks[i][j]);
+					var wordObj = self.returnWordObj(word,isEndOfSentence,$wheel);
+					wordObjs.push(wordObj)
+					if(wordObj.width > widestWord){
+						widestWord = wordObj.width;
+					}
 				}
 			}
 
+			//If the forced word isn't already in the word bank, add it there.
 			if(this.wordBanks[i].indexOf(this.forcedSentenceArray[i]) === -1){
 				this.wordBanks[i].push(this.forcedSentenceArray[i])
 			}
