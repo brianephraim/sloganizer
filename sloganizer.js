@@ -1,5 +1,5 @@
 ;(function(global){
-	// UglifyJS define hack.  Used for unit testing.
+	// UglifyJS define hack.  Used for unit testing..
 	if (typeof SLOGANIZER_NOW === 'undefined') {
 	  SLOGANIZER_NOW = function () {
 	    return +new Date();
