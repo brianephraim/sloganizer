@@ -75,15 +75,26 @@
 			-->
 		</div>
 		<!--gruntUnBuildBodyEnd-->
+		<script type="text/javascript">
+		    var require = {
+		        //baseUrl: "/scripts/",
+		        //waitSeconds: 15,
+		        urlArgs : "bust="+new Date().getTime()
+		    };
+		</script>
+		<script data-main="main" src="require.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
         <!--<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>-->
         <!--gruntUnBuildScriptsStart-->	
+        <!--
         <script type="text/javascript" src="underscore-min.js"></script>
         <script type="text/javascript" src="jquery.mousewheel.js"></script>	
         <script type="text/javascript" src="browser-detect.js"></script>	
 		<script type="text/javascript" src="tools.js"></script>	
 		<script type="text/javascript" src="sloganizer.js"></script> 
 		<script type="text/javascript" src="app.js"></script> 
+		-->
+
 		<!--gruntUnBuildScriptsEnd-->
     </body>
 </html>

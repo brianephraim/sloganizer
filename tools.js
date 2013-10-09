@@ -1,4 +1,5 @@
 ;(function(global){
+	console.log('zxcvzxvc')
 	// UglifyJS define hack.  Used for unit testing.
 	if (typeof TOOLS_NOW === 'undefined') {
 	  TOOLS_NOW = function () {
@@ -309,17 +310,16 @@
 
 
 	if (typeof exports === 'object') {
-	// nodejs
-	module.exports = Tools;
+		// nodejs
+		module.exports = Tools;
 	} else if (typeof define === 'function' && define.amd) {
-	// AMD
-	define(function () { return Tools; });
+		// AMD
+		define(function () { console.log(Tools);return Tools; });
 	} else if (typeof global.Tools === 'undefined') {
-	// Browser: Make `Tweenable` globally accessible.
-	global.Tools = Tools;
+		// Browser: Make `Tweenable` globally accessible.
+		global.Tools = Tools;
 	}
 
-	return Tools;
 
 
 })(this);
