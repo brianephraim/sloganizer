@@ -15,7 +15,7 @@ module.exports = function(grunt) {
           },
           { 
             from: '</script>',                   // string replacement
-            to: '<\/script>' 
+            to: '<\\/script>' 
           },
           
           { 
