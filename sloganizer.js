@@ -11,12 +11,11 @@
 	}
 
 
-	var makeSloganizerObject = function(Tools){
+	var makeSloganizerObject = function($,Tools){
 
 		//************
 		//LOGIC HERE
 		var obj= function(options){ 
-			console.log('obj contructor')
 			var defaults = {
 				$el: '',
 				wordBanks:[],
@@ -410,13 +409,13 @@
 
 	if (typeof exports === 'object') {
 		// nodejs
-		module.exports = makeSloganizerObject(Tools);
+		module.exports = makeSloganizerObject($,Tools);
 	} else if (typeof define === 'function' && define.amd) {
 		// AMD
-		define(['Tools'],function (Tools) { return makeSloganizerObject(Tools); });
+		define(['jQuery','Tools'],function ($,Tools) { return makeSloganizerObject($,Tools); });
 	} else if (typeof global.sloganizer === 'undefined') {
 		// Browser: Make `Tweenable` globally accessible.
-		global.sloganizer = makeSloganizerObject(Tools);
+		global.sloganizer = makeSloganizerObject($,Tools);
 	}
 
 

@@ -12,14 +12,12 @@
 
 
 
-	var app = function(Tools, sloganizer){
+	var app = function($,Tools, sloganizer){
 		$(function() {
-			console.log(sloganizer)
 			var $wordBankTextAreas = $('.wordBanks textarea');
 			var $forcedWordsInputs = $('.forcedWords input');
 
 			var $sloganizerWrapper = $('.mySloganizerWrapper');
-			console.log(sloganizer)
 			var mySloganizer = sloganizer.createSloganizer({
 				$el: $sloganizerWrapper.find('.sloganizer'),
 				wordBanks: [
@@ -30,7 +28,6 @@
 				],
 				forcedSentenceArray: ['Do','fun','things','sometime.'],
 				initializeCallback: function(that){
-					console.log('initializeCallback',that.wordBanks)
 					$wordBankTextAreas
 					for(var i=0, l=that.wordBanks.length; i<l; i++){
 						//that.wordBanks[i]
@@ -82,13 +79,13 @@
 
 	if (typeof exports === 'object') {
 	// nodejs
-		module.exports = app(Tools, sloganizer);
+		module.exports = app($,Tools, sloganizer);
 	} else if (typeof define === 'function' && define.amd) {
 	// AMD
-		define(['Tools','sloganizer'],function (Tools, sloganizer) { return app(Tools, sloganizer); });
+		define(['jQuery','Tools','sloganizer'],function (jQuery,Tools, sloganizer) { return app(jQuery,Tools, sloganizer); });
 	} else if (typeof global.app === 'undefined') {
 	// Browser: Make `Tweenable` globally accessible.
-	global.app = app(Tools, sloganizer);
+	global.app = app($,Tools, sloganizer);
 	}
 
 

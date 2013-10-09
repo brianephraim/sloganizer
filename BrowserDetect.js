@@ -141,7 +141,5 @@
 	    global.BrowserDetect = BrowserDetect;
 	  }
 
-	  return BrowserDetect;
-
 
 })(this);

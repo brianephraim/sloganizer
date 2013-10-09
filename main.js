@@ -1,30 +1,23 @@
 require.config({
+	//THESE ARE LIBRARIES THAT AREN'T AMD COMPLIANT.
     paths: {
+    	//'LIBRARY-NAME : LIBRARY-URL'
         'jQuery': 'http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min',
         'mousewheel':'jquery.mousewheel',
-        'underscore': 'underscore-min',
-        'BrowserDetect':'browser-detect',
-        'sloganizer' : 'sloganizer',
-        'app':'app'
+        'underscore': 'underscore-min'
     },
+    //THIS IS WHERE YOU MAP THE FROM THE LIBRARY-NAME ABOVE TO THE GLOBAL VARIABLE THEY RETURN
     shim: {
         'jQuery': {
             exports: '$'
         },
         'underscore': {
             exports: '_'
-        },
-        'app': {
-            exports: 'app'
         }
     }
 });
-require(['Tools','sloganizer','app','module2','Tools','jQuery','underscore','mousewheel','BrowserDetect'], function(Tools,sloganizer,app,module2ref,$,_,mousewheel,BrowserDetect){
-	console.log('zxcvzxcv')
-	var myApp = app;
+require(['BrowserDetect','app','module2'], function(jQueryReference,BrowserDetect,etc,whatev,names,you,want){
+	console.log(jQueryReference)
+	console.log('BrowserDetect',BrowserDetect)
 	
-    // do something with the loaded modules
-    //var module1 = new module1ref(),
-          //module2 = new module2ref();
-    //console.log(module1.getName() === module2.getModule1Name()); // true
 });
