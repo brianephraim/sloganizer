@@ -14,6 +14,11 @@ module.exports = function(grunt) {
             to: 'rel="stylesheet" href="sloganizer/' 
           },
           { 
+            from: '</script>',                   // string replacement
+            to: '<\/script>' 
+          },
+          
+          { 
             from: 'type="text/javascript" src="',                   // string replacement
             to: 'type="text/javascript" src="sloganizer/' 
           },
