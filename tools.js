@@ -315,7 +315,9 @@
 		module.exports = makeTools($);
 	} else if (typeof define === 'function' && define.amd) {
 		// AMD
-		define(['jQuery'],function (jQuery) { return makeTools(jQuery); });
+		define(['jQuery'],function () { 
+			return makeTools.apply(null,arguments);
+		});
 	} else if (typeof global.Tools === 'undefined') {
 		// Browser: Make `Tweenable` globally accessible.
 		global.Tools = makeTools($);

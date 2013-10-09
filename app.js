@@ -82,7 +82,9 @@
 		module.exports = app($,Tools, sloganizer);
 	} else if (typeof define === 'function' && define.amd) {
 	// AMD
-		define(['jQuery','Tools','sloganizer'],function (jQuery,Tools, sloganizer) { return app(jQuery,Tools, sloganizer); });
+		define(['jQuery','Tools','sloganizer'],function(){ 
+			return app.apply(null,arguments);
+		});
 	} else if (typeof global.app === 'undefined') {
 	// Browser: Make `Tweenable` globally accessible.
 	global.app = app($,Tools, sloganizer);
