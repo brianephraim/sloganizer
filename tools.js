@@ -143,7 +143,7 @@
 			return 'translate3d('+x+'px,'+y+'px,'+z+'px)'
 		}
 
-		// Tools.cssTransitioner({
+		// tools.cssTransitioner({
 		// 	target: $('someDiv),
 		// 	cssProperty: tools.dom.translate3dKey(),
 		// 	cssValue: tools.dom.translate3dValue(0,0,0),
@@ -303,10 +303,10 @@
 		
 		
 		//Different devices use different CSS to do jaw movement.  CSS properties and value are abstracted and assigned below.
-		var Tools = new obj();
+		var tools = new obj();
 		
 
-		return Tools;
+		return tools;
 	};
 
 
@@ -318,9 +318,9 @@
 		define(['jQuery'],function () { 
 			return makeTools.apply(null,arguments);
 		});
-	} else if (typeof global.Tools === 'undefined') {
+	} else if (typeof global.tools === 'undefined') {
 		// Browser: Make `Tweenable` globally accessible.
-		global.Tools = makeTools($);
+		global.tools = makeTools($);
 	}
 
 

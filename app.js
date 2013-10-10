@@ -12,7 +12,7 @@
 
 
 
-	var app = function($,Tools, sloganizer){
+	var app = function($,tools, sloganizer){
 		$(function() {
 			var $wordBankTextAreas = $('.wordBanks textarea');
 			var $forcedWordsInputs = $('.forcedWords input');
@@ -79,15 +79,15 @@
 
 	if (typeof exports === 'object') {
 	// nodejs
-		module.exports = app($,Tools, sloganizer);
+		module.exports = app($,tools, sloganizer);
 	} else if (typeof define === 'function' && define.amd) {
 	// AMD
-		define(['jQuery','Tools','sloganizer'],function(){ 
+		define(['jQuery','tools','sloganizer'],function(){ 
 			return app.apply(null,arguments);
 		});
 	} else if (typeof global.app === 'undefined') {
 	// Browser: Make `Tweenable` globally accessible.
-	global.app = app($,Tools, sloganizer);
+	global.app = app($,tools, sloganizer);
 	}
 
 

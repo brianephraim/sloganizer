@@ -11,7 +11,7 @@
 	}
 
 
-	var makeSloganizerObject = function($,Tools){
+	var makeSloganizerObject = function($,tools){
 
 		//************
 		//LOGIC HERE
@@ -84,7 +84,7 @@
 			if(wordObjs.length === 2){
 				newIndex = currentWordObjIndex ===0 ? 1 : 0;
 			} else {
-				var randomIndex = Tools.math.returnRandomInt(0,wordObjs.length - 1);
+				var randomIndex = tools.math.returnRandomInt(0,wordObjs.length - 1);
 				if(wheelObj.currentBankAssignedWordObj.word === wordObjs[randomIndex].word){
 					randomIndex += 1;
 					if(randomIndex > wordObjs.length - 1){
@@ -100,9 +100,9 @@
 		obj.prototype.animateSlots = function(){
 			var self = this;
 			//priming lateral animation
-			Tools.dom.cssTransitioner({
+			tools.dom.cssTransitioner({
 				target: self.$wheels,
-				cssProperty: Tools.dom.translate3dKey,
+				cssProperty: tools.dom.translate3dKey,
 				cssValue: 'translate3d(0,0,0)',
 				duration: 500,
 				ease: 'ease-in-out',
@@ -114,9 +114,9 @@
 			function slotAnimation(){
 				var callbackCount = 0;
 				for(var j = 0; j<self.wheelObjs.length; j++){
-					Tools.dom.cssTransitioner2({
+					tools.dom.cssTransitioner2({
 						target: self.wheelObjs[j].$el,
-						cssProperty: Tools.dom.translate3dKey,
+						cssProperty: tools.dom.translate3dKey,
 						cssValue: {
 							type:'translate3d',
 							values:[0,-(self.wheelObjs[j].wheelLengthXXX - 1)*self.wordHeight,0]
@@ -199,9 +199,9 @@
 					callbackCount2++;	
 				} else {
 
-					Tools.dom.cssTransitioner2({
+					tools.dom.cssTransitioner2({
 						target: self.wheelObjs[k].$el,
-						cssProperty: Tools.dom.translate3dKey,
+						cssProperty: tools.dom.translate3dKey,
 						cssValue: {
 							type:'translate3d',
 							values:[self.wheelObjs[k].shiftAmount,0,1]
@@ -409,15 +409,15 @@
 
 	if (typeof exports === 'object') {
 		// nodejs
-		module.exports = makeSloganizerObject($,Tools);
+		module.exports = makeSloganizerObject($,tools);
 	} else if (typeof define === 'function' && define.amd) {
 		// AMD
-		define(['jQuery','Tools'],function(){
+		define(['jQuery','tools'],function(){
 			return makeSloganizerObject.apply(null,arguments);
 		});
 	} else if (typeof global.sloganizer === 'undefined') {
 		// Browser: Make `Tweenable` globally accessible.
-		global.sloganizer = makeSloganizerObject($,Tools);
+		global.sloganizer = makeSloganizerObject($,tools);
 	}
 
 
