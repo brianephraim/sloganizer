@@ -1,19 +1,2 @@
-/* CLEARFIX */
-.clearfix{
-	zoom: 1;
-} 
-.clearfix:before, .clearfix:after {
-	content: ".";
-	display: block;
-	height: 0;
-	overflow: hidden;
-}
-		
-.clearfix:after {
-	clear: both;
-	
-}
-body{margin:0 auto;}
-.mySloganizerWrapper{position:relative;background:#ddd;font-size:40px;}
-.sloganizer{margin:0 auto;position:relative;}
-h1{text-align:center;font-size:50px;}
+
+
