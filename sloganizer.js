@@ -28,7 +28,7 @@
 			this.wordBanks = this.settings.wordBanks;
 			this.$el = this.settings.$el;
 			this.forcedSentenceArray = this.settings.forcedSentenceArray;
-
+			this.$el.css({'margin':'0 auto','position':'relative'});
 			this.initialize()
 			
 		};

@@ -130,18 +130,18 @@
 
 
 
-	  if (typeof exports === 'object') {
-	    // nodejs
-	    module.exports = BrowserDetect;
-	  } else if (typeof define === 'function' && define.amd) {
-	    // AMD
-	    define(function () { 
-	    	return BrowserDetect; 
-	    });
-	  } else if (typeof global.BrowserDetect === 'undefined') {
-	    // Browser: Make `Tweenable` globally accessible.
-	    global.BrowserDetect = BrowserDetect;
-	  }
+	if (typeof exports === 'object') {
+		// nodejs
+		module.exports = BrowserDetect;
+	} else if (typeof define === 'function' && define.amd) {
+		// AMD
+		define(function () { 
+			return BrowserDetect; 
+		});
+	} else if (typeof global.BrowserDetect === 'undefined') {
+		// Browser: Make `Tweenable` globally accessible.
+		global.BrowserDetect = BrowserDetect;
+	}
 
 
 })(this);
