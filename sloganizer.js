@@ -413,6 +413,7 @@
 	} else if (typeof define === 'function' && define.amd) {
 		// AMD
 		define(['jQuery','tools'],function(){
+			console.log('slogandefine')
 			return makeSloganizerObject.apply(null,arguments);
 		});
 	} else if (typeof global.sloganizer === 'undefined') {
