@@ -1,5 +1,5 @@
 require.config({
-	baseUrl: './',
+	//baseUrl: './',
 	//THESE ARE LIBRARIES THAT AREN'T AMD COMPLIANT.
     paths: {
     	//'PATH-NICKNAME : LIBRARY-URL'
