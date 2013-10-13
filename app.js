@@ -14,7 +14,8 @@
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//EXPECTS <whatev class="sloganizerAppWrapper"></whatev> in the DOM
 	var app = function($,tools, sloganizer){
-		console.log(tools)
+		console.log('tools',tools)
+		console.log('sloganizer',sloganizer)
 		$(function() {//DOCUMENT READY
 
 			//**************************
